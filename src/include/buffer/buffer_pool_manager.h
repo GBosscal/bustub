@@ -65,6 +65,9 @@ class FrameHeader {
   explicit FrameHeader(frame_id_t frame_id);
 
  private:
+
+  page_id_t page_id_ = INVALID_PAGE_ID; // 当前帧存储的页ID
+
   auto GetData() const -> const char *;
   auto GetDataMut() -> char *;
   void Reset();
@@ -161,6 +164,17 @@ class BufferPoolManager {
    * Note: Please ignore this for P1.
    */
   LogManager *log_manager_ __attribute__((__unused__));
+
+  auto FindVictimFrame() -> frame_id_t; // 查找可替代的帧
+
+  void ReadPageFromDisk(page_id_t page_id, frame_id_t frame_id); // 从磁盘读取页到指定帧
+
+  auto WritePageToDisk(frame_id_t frame_id) -> bool; // 将指定帧的页写入磁盘
+
+  auto GetFrameFromPageId(page_id_t page_id) -> std::shared_ptr<FrameHeader>; // 根据页ID获取帧
+
+  auto AllocateFrame(frame_id_t *frame_id) -> bool; // 分配新的帧
+
 
   /**
    * TODO(P1): You may add additional private members and helper functions if you find them necessary.
