@@ -67,6 +67,8 @@ class ReadPageGuard {
   ~ReadPageGuard();
 
  private:
+
+  std::shared_lock<std::shared_mutex> read_lock_; // 共享锁
   /** @brief Only the buffer pool manager is allowed to construct a valid `ReadPageGuard.` */
   explicit ReadPageGuard(page_id_t page_id, std::shared_ptr<FrameHeader> frame, std::shared_ptr<ArcReplacer> replacer,
                          std::shared_ptr<std::mutex> bpm_latch, std::shared_ptr<DiskScheduler> disk_scheduler);
@@ -174,6 +176,8 @@ class WritePageGuard {
   ~WritePageGuard();
 
  private:
+
+  std::unique_lock<std::shared_mutex> write_lock_; // 独占锁
   /** @brief Only the buffer pool manager is allowed to construct a valid `WritePageGuard.` */
   explicit WritePageGuard(page_id_t page_id, std::shared_ptr<FrameHeader> frame, std::shared_ptr<ArcReplacer> replacer,
                           std::shared_ptr<std::mutex> bpm_latch, std::shared_ptr<DiskScheduler> disk_scheduler);
